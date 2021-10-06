@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alarm</title>
+        <link rel="stylesheet" href="bootstrap-4.5.3-dist/css/bootstrap.css">
+
+        <style>
+            #container {
+                height: 220pt;
+                margin-top: 30pt;
+                width: 400pt;
+            }
+            input {
+                font-size: 1.2em !important;
+                display: inline !important;
+                width: 75pt !important;
+            }
+            #update {
+                font-size: 3em;
+                font-weight: bolder;
+            }
+            button {
+                font-size: 1.5em !important;
+                font-weight: bolder !important;
+            }
+            #whatToDo {
+                margin-top: 10pt;
+                width: 320pt !important;
+            }
+        </style>
+    </head>
+    <body>
+        <center>
+            <div id="container" class="rounded bg-dark text-light">
+                <div id="date"></div>
+                <div id="update"></div>
+
+                <input class="form-control" id="hourInput" type="text" maxlength="2" placeholder="Hour">
+                <input class="form-control" id="minuteInput" type="text" maxlength="2" placeholder="Minute">
+                <input class="form-control" id="secondsInput" type="text" maxlength="2" placeholder="Seconds"> <br>
+
+                <input type="text" class="form-control" placeholder="What To Do" id="whatToDo"> <br>
+                <h3 id="display"></h3>    
+                
+                <button class="mt-1 btn btn-warning text-light" onclick="set()" id="setAlarm">SET</button>
+                <button class="mt-1 ml-2 btn btn-danger" onclick="stop()">STOP</button>
+                <audio autoplay id="audio" src=""></audio>
+            </div>
+        </center>
+
+        <script>
+            setInterval(function () {
+                let scope = new Date;
+                update.innerText = `${scope.getHours()}:${scope.getMinutes()}:${scope.getSeconds()}`;
+            }, 0);
+
+            const set = ()=> {
+                if (hourInput.value > 24 || minuteInput.value > 59 || secondsInput.value > 60) {
+                    display.innerText = "Out of Time";
+                    return;
+                }
+                if (setAlarm.innerText == "SET" && hourInput.value !== "" && minuteInput.value !== "" && secondsInput.value !== "") {
+                    hourInput.disabled = true;
+                    minuteInput.disabled = true;
+                    secondsInput.disabled = true;
+                    whatToDo.disabled = true;
+                    display.innerText = "Alarm Set";    
+                    setAlarm.innerText = "RESET";
+                } else if (setAlarm.innerText == "RESET") {
+                    hourInput.disabled = false;
+                    minuteInput.disabled = false;
+                    secondsInput.disabled = false;
+                    whatToDo.disabled = false;
+                    hourInput.value = "";
+                    minuteInput.value = "";
+                    secondsInput.value = "";
+                    whatToDo.value = "";
+                    display.innerText = "";    
+                    setAlarm.innerText = "SET";
+                    return;
+                };
+                
+
+                setInterval(function () {
+                    let nDate = new Date;
+
+                    let seconds = secondsInput.value;
+                    let minute = minuteInput.value;
+                    let hour = hourInput.value;
+
+                    let hDate = nDate.getHours();
+                    let mDate = nDate.getMinutes();
+                    let sDate = nDate.getSeconds();
+
+                    if (hour == hDate && minute == mDate && seconds == sDate) {
+                        audio.src = "hangouts_incoming_call.ogg";
+                        audio.loop = true;
+                        display.innerText = whatToDo.value;
+                    };
+                }, 1000);
+            };
+            
+            const stop = ()=> {
+                audio.src = "";
+                display.innerText = "";
+                
+                hourInput.disabled = false;
+                minuteInput.disabled = false;
+                secondsInput.disabled = false;
+                whatToDo.disabled = false;
+
+                hourInput.value = "";
+                minuteInput.value = "";
+                secondsInput.value = "";
+                whatToDo.value = "";
+            };
+
+        </script>
+    </body>
+</html>
